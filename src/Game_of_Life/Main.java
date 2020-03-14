@@ -1,4 +1,4 @@
-package game_of_life;
+package Game_of_Life;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 
-public class test_interface extends Application {
+public class Main extends Application {
 	
 	Stage window;
 	Scene scene;
