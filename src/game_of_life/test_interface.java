@@ -24,13 +24,13 @@ public class test_interface extends Application {
 		window = primaryStage;
 		
 		Slider slider = new Slider();
-		Label label = new Label("						ËÐ 1\n	   Ñîçäàíèå ãðàôè÷åñêîãî èíòåðôåéñà(Èãðà 'Æèçíü')\n"
-				+ "\nÇäåñü áóäåò ðàcïîëàãàòüñÿ ñàìî èãðîâîå ïîëå\nÊíîïêè ñëåâà îòâå÷àþò çà"
-				+ " âçàèìîäåéñòâèå ñ ïîëåì\nÏîëçóíîê ñíèçó ðåãóëèðóåò ñêîðîñòü ñèìóëÿöèè"
-				+ "\nÊíîïêè ñâåðõó áóäóò îòâå÷àòü çà çàãðóçêó ñîõðàíåíèé,\nâñòàâêó ñîõðàíåííûõ ôèãóðîê è òä"
-				+ "\n\nP.S. Ñî âðåìåíåì ñäåëàþ âñå êðàñèâåå, ñåé÷àñ ïîêàçûâàþ \n÷òî ÿ ðàçîáðàëñÿ ñ JavaFx");
+		Label label = new Label("						Ð›Ð  1\n	   Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð³Ñ€Ð°Ñ„Ð¸Ñ‡ÐµÑÐºÐ¾Ð³Ð¾ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ°(Ð˜Ð³Ñ€Ð° 'Ð–Ð¸Ð·Ð½ÑŒ')\n"
+				+ "\nÐ—Ð´ÐµÑÑŒ Ð±ÑƒÐ´ÐµÑ‚ Ñ€Ð°cÐ¿Ð¾Ð»Ð°Ð³Ð°Ñ‚ÑŒÑÑ ÑÐ°Ð¼Ð¾ Ð¸Ð³Ñ€Ð¾Ð²Ð¾Ðµ Ð¿Ð¾Ð»Ðµ\nÐšÐ½Ð¾Ð¿ÐºÐ¸ ÑÐ»ÐµÐ²Ð° Ð¾Ñ‚Ð²ÐµÑ‡Ð°ÑŽÑ‚ Ð·Ð°"
+				+ " Ð²Ð·Ð°Ð¸Ð¼Ð¾Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ Ñ Ð¿Ð¾Ð»ÐµÐ¼\nÐŸÐ¾Ð»Ð·ÑƒÐ½Ð¾Ðº ÑÐ½Ð¸Ð·Ñƒ Ñ€ÐµÐ³ÑƒÐ»Ð¸Ñ€ÑƒÐµÑ‚ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸Ð¸"
+				+ "\nÐšÐ½Ð¾Ð¿ÐºÐ¸ ÑÐ²ÐµÑ€Ñ…Ñƒ Ð±ÑƒÐ´ÑƒÑ‚ Ð¾Ñ‚Ð²ÐµÑ‡Ð°Ñ‚ÑŒ Ð·Ð° Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÑƒ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ð¹,\nÐ²ÑÑ‚Ð°Ð²ÐºÑƒ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð½Ñ‹Ñ… Ñ„Ð¸Ð³ÑƒÑ€Ð¾Ðº Ð¸ Ñ‚Ð´"
+				+ "\n\nP.S. Ð¡Ð¾ Ð²Ñ€ÐµÐ¼ÐµÐ½ÐµÐ¼ ÑÐ´ÐµÐ»Ð°ÑŽ Ð²ÑÐµ ÐºÑ€Ð°ÑÐ¸Ð²ÐµÐµ, ÑÐµÐ¹Ñ‡Ð°Ñ Ð¿Ð¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÑŽ \nÑ‡Ñ‚Ð¾ Ñ Ñ€Ð°Ð·Ð¾Ð±Ñ€Ð°Ð»ÑÑ Ñ JavaFx");
 		
-		Button button_run = new Button("Run"); // Ñîçäàþ êíîïêè
+		Button button_run = new Button("Run"); // ÑÐ¾Ð·Ð´Ð°ÑŽ ÐºÐ½Ð¾Ð¿ÐºÐ¸
 		Button button_stop = new Button("Stop");
 		Button button_stepf= new Button("Next\nGen");
 		Button button_stepb= new Button("Prev\nGen");
@@ -39,14 +39,14 @@ public class test_interface extends Application {
 		Button button_openfile = new Button("Open file");
 		Button button_importfile = new Button("Import file");
 		Button button_savefile = new Button("Save file");
-		
-		
+
+
 		VBox leftMenu = new VBox(2);
 		VBox rightMenu = new VBox();
 		HBox topMenu = new HBox(3);
 		HBox bottomMenu = new HBox(3);
 		VBox centerMenu = new VBox();
-		topMenu.setStyle("-fx-background-color: #6495ED;"); //Çäåñü ðàñêðàøèâàþ ïîëÿ, äåëàþ îòñòóïû 
+		topMenu.setStyle("-fx-background-color: #6495ED;"); //Ñ€Ð°ÑÐºÑ€Ð°ÑˆÐ¸Ð²Ð°ÑŽ Ð¿Ð°Ð½ÐµÐ»Ð¸
 		topMenu.setPadding(new Insets(10, 0, 10, 130));
 		leftMenu.setStyle("-fx-background-color: #ADD8E6;");
 		leftMenu.setPadding(new Insets(10, 5, 10, 5));
@@ -60,7 +60,7 @@ public class test_interface extends Application {
 		bottomMenu.getChildren().addAll(slider);
 		centerMenu.getChildren().addAll(label);
 		
-		button_run.setOnAction(e -> System.out.println("Run")); //Òóò ÿ ïðîáîâàë ïðèâÿçàòü äåéñòâèÿ ê êíîïêàì
+		button_run.setOnAction(e -> System.out.println("Run")); //Ð¿Ñ€Ð¾Ð±Ð¾Ð²Ð°Ð» Ð¿Ñ€Ð¸Ð²ÑÐ·Ñ‹Ð²Ð°Ñ‚ÑŒ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ Ðº ÐºÐ½Ð¾Ð¿ÐºÐ°Ð¼
 		button_stop.setOnAction(e -> System.out.println("Stop"));
 		button_stepf.setOnAction(e -> System.out.println("Step forward"));
 		button_stepb.setOnAction(e -> System.out.println("Step backward"));
