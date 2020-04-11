@@ -1,5 +1,7 @@
 package Game_of_Life;
 
+import java.util.concurrent.TimeUnit;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -14,70 +16,38 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 //Создал классы CellGrid и Cell, реализующую логику игры
 //Реализовал игровое поле, его пошаговое изменение
+//Создал специальный класс FieldManager,который редактирует игровое поле
 //Рабочие кнопки на данный момент - Step Forward, Clear, Randomize, можно рисовать на поле с помощью мыши
-//Прямо сейчас пытаюсь создать класс FieldManager, который будет работать с полем
-//(вынести туда то, чего в мейне быть не должно)
+//Кнопки RUN(авторежим) и Stop работают, но только один раз, второе нажатие крашит программу,
+//в дальнейшем разберусь с этой проблемой(дело в потоке Auto)
+
 public class Main extends Application {
 	private static final int sceneX = 1250;                   //Define'ы для параметров поля, в дальнейшем
 	private static final int sceneY = 640;                    //сделаю изменение вручную
 	private static final int canvasX = 1142;
 	private static final int canvasY = 562;
-	private static final int cellSize = 17;
+	private static final int cellSize = 12;
 	private static final int gridX = canvasY/cellSize;
 	private static final int gridY = canvasX/cellSize;
-	
+	FieldManager fm = new FieldManager(canvasX,canvasY,cellSize,gridX,gridY);
+	boolean autorun = false;
+	int autorunSpeed = 1000;
+	Slider slider = new Slider(1,25,12);
 	public static void main(String[] args) {
 		launch(args);
     }
 	
 	public void start (Stage primaryStage) throws Exception{
+		Auto auto = new Auto(); 
 		Stage window;
 		Scene scene;
 		window = primaryStage;
 		
-		CellGrid MyGrid = new CellGrid(gridX,gridY);
-		MyGrid.setGlyder(10,10);
-		MyGrid.setGlyder(15,8);
-		MyGrid.setGlyder(7,25);
-		MyGrid.setGlyder(13,20);
-		MyGrid.setGlyder(16,32);
-		MyGrid.setGlyder(14,40);
-		
-		MyGrid.setSwitch(27,10);
-		MyGrid.setSwitch(27,15);
-		MyGrid.setSwitch(27,20);
-		MyGrid.setSwitch(27,25);
-		MyGrid.setSwitch(27,30);
-		MyGrid.setSwitch(27,35);
-		MyGrid.setSwitch(27,40);
-		MyGrid.setSwitch(27,45);
-		MyGrid.setSwitch(27,50);
-		MyGrid.setSwitch(27,55);
-		
-		GraphicsContext gc;                         
-		Canvas canvas = new Canvas(canvasX,canvasY); //устанавливаю поле в начальное положение
-		gc = canvas.getGraphicsContext2D();
-		gc.setStroke(Color.BLACK);
-	    gc.setFill(Color.WHITE);
-		gc.setLineWidth(0);
-		gc.fillRect(1,1,canvasX,canvasY);
-		 gc.setFill(Color.BLACK);
-		  
-		for(int i = 0; i < gridX; i++)
-		for(int j = 0; j < gridY; j++)
-		{
-		if(MyGrid.getCell(i, j).getState())
-		gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-		else
-		gc.strokeRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-		
-		}
-		
-		Slider slider = new Slider();
+		slider.setShowTickMarks(true);
 		Button button_run = new Button("Run"); // создаю кнопки
 		Button button_stop = new Button("Stop");
-		Button button_stepf= new Button("Next\nGen");
-		Button button_stepb= new Button("Prev\nGen");
+		Button button_stepf = new Button("Next\nGen");
+		Button button_stepb = new Button("Prev\nGen");
 		Button button_clear = new Button("Clear\nfield");
 		Button button_randomize = new Button("Rand");
 		Button button_openfile = new Button("Open file");
@@ -100,95 +70,46 @@ public class Main extends Application {
 		topMenu.getChildren().addAll(button_openfile,button_importfile,button_savefile);
 		bottomMenu.getChildren().addAll(slider);
 		
-		button_run.setOnAction(e ->{}); //привязываю действия к кнопкам
-		button_stop.setOnAction(e -> {});
-		button_stepf.setOnAction(e -> {
-		MyGrid.stepForward();
-		 gc.setFill(Color.WHITE);
-		for(int i = 0; i < gridX; i++)
-			for(int j = 0; j < gridY; j++)
-			{
-			gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-			}
-		 gc.setFill(Color.BLACK);
-		for(int i = 0; i < gridX; i++)
-			for(int j = 0; j < gridY; j++)
-			{
-			if(MyGrid.getCell(i, j).getState())
-			gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-			else
-			gc.strokeRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-			}
-		}
-		);
+		button_run.setOnAction(e -> {autorun = true; auto.start();}); //привязываю действия к кнопкам
+		button_stop.setOnAction(e -> {autorun = false;});
+		button_stepf.setOnAction(e -> fm.updateField());
 		button_stepb.setOnAction(e -> {});
-		button_clear.setOnAction(e -> {
-			MyGrid.clearGrid();
-			gc.setFill(Color.WHITE);
-			gc.fillRect(1,1,canvasX,canvasY);
-			for(int i = 0; i < gridX; i++)
-				for(int j = 0; j < gridY; j++)
-				{
-				gc.strokeRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-				}
-		}
-		);
-		button_randomize.setOnAction(e -> {
-		MyGrid.randomizeGrid();
-		 gc.setFill(Color.WHITE);
-			for(int i = 0; i < gridX; i++)
-				for(int j = 0; j < gridY; j++)
-				{
-				gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-				}
-			 gc.setFill(Color.BLACK);
-			for(int i = 0; i < gridX; i++)
-				for(int j = 0; j < gridY; j++)
-				{
-				if(MyGrid.getCell(i, j).getState())
-				gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-				else
-				gc.strokeRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-				}
-			}
-	);		
+		button_clear.setOnAction(e -> fm.clearField());
+		button_randomize.setOnAction(e -> fm.randomizeField());		
 		
 		BorderPane borderpane = new BorderPane(); // Собираю borderpane
 		borderpane.setTop(topMenu);
 		borderpane.setLeft(leftMenu);
 		borderpane.setBottom(bottomMenu);
 		borderpane.setRight(rightMenu);
-		borderpane.setCenter(canvas);		
+		borderpane.setCenter(fm.getField());		
 		
 		scene = new Scene(borderpane,sceneX,sceneY);
 		
-		scene.setOnMouseClicked(e -> {  //Реакция поля на нажатие мыши
-			System.out.println(e.getSceneX() + " " + e.getSceneY() );
-			if(!MyGrid.getCell((int)((e.getSceneY() - 45)/cellSize ),(int)((e.getSceneX() - 56)/cellSize)).getState() )
-			MyGrid.setCell((int)((e.getSceneY() - 45)/cellSize ),(int) ((e.getSceneX() - 56)/cellSize), true);
-			else MyGrid.setCell((int)((e.getSceneY() - 45)/cellSize ),(int) ((e.getSceneX() - 56)/cellSize), false);
-			gc.setFill(Color.WHITE);
-			for(int i = 0; i < gridX; i++)
-				for(int j = 0; j < gridY; j++)
-				gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);	
-			 gc.setFill(Color.BLACK);
-			for(int i = 0; i < gridX; i++)
-				for(int j = 0; j < gridY; j++)
-				{
-					if(MyGrid.getCell(i, j).getState())
-						gc.fillRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-					else
-						gc.strokeRect(j*cellSize + 1, i*cellSize + 1, cellSize, cellSize);
-				}
-			
-		}
-		);
+		scene.setOnMouseClicked(e -> fm.clickMouse(e.getSceneX(), e.getSceneY()) );
 	
-
 		window.setScene(scene);
 		window.setTitle("Game of Life");
 		window.show();
-
+		
+	}
+	
+	class Auto extends Thread {  // Поток авторежима
+		@Override
+		public void run() {
+		while(true) {
+			System.out.println("sss");
+			if(!autorun) break;
+			fm.updateField();
+				try {
+					Thread.sleep(1000/(long)slider.getValue());
+				}
+				catch(InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+			}		
+		}
+		
 	}
 	
 }
