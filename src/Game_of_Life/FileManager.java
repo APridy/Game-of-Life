@@ -19,6 +19,13 @@ public class FileManager {
 	/** Data member scanner*/
 	private Scanner saveScan;
 	
+	/** Data member stat reader*/
+	private FileReader statReader;
+	/** Data member stat writer*/
+	private FileWriter statWriter;
+	/** Data member scanner*/
+	private Scanner statScan;
+	
 	/**
 	 * Constructor function
 	 * @throws Exception
@@ -27,6 +34,9 @@ public class FileManager {
 		saveReader = new FileReader("save.txt");
 		saveWriter = new FileWriter("save.txt",true);
 		saveScan = new Scanner(saveReader);
+		statReader = new FileReader("stat.txt");
+		statWriter = new FileWriter("stat.txt",true);
+		statScan = new Scanner(statReader);
 	}
 	
 	/**
@@ -34,6 +44,71 @@ public class FileManager {
 	 * @param MyGrid cell grid
 	 * @throws Exception
 	 */
+	public int[] loadStat(int which) throws Exception{
+		int[] arr = {0,0,0,0,0,0,0,0};
+		String str;
+		switch (which) {
+			case 1: {
+				str = statScan.nextLine();
+				int j = 0;
+				for(int i = 0; i < 8; i++) {
+					while(str.charAt(j) != '|') {
+						arr[i] *= 10;
+						arr[i] += str.charAt(j) - 48;
+						j++;
+					}
+					j++;
+				}
+			}
+			break;
+			case 2:
+			{
+				str = statScan.nextLine();
+				int j = 0;
+				for(int i = 0; i < 8; i++) {
+					while(str.charAt(j) != '|') {
+						arr[i] *= 10;
+						arr[i] += str.charAt(j) - 48;
+						j++;
+					}
+					j++;
+				}
+			}
+			break;
+		}	
+		return arr;
+	}
+	public void saveStat(Stat st) throws Exception{
+		PrintWriter writer = new PrintWriter("stat.txt");
+		writer.print("");
+		writer.close();
+		for(int i = 0; i < 8; i++) { 
+			int num = st.get_statistics_array()[i];
+		    int div = 1;
+		    while(num/div > 9) div *= 10;
+		    while(div != 0) {
+		    	statWriter.write(num/div + 48);
+		        num %= div;
+		        div /= 10;
+		    }
+			statWriter.write("|");
+		}
+		statWriter.write("\n");
+		for(int i = 0; i < 8; i++) { 
+			int num = st.get_best_statistics_array()[i];
+			if (st.get_statistics_array()[i] > num) num = st.get_statistics_array()[i];
+		    int div = 1;
+		    while(num/div > 9) div *= 10;
+		    while(div != 0) {
+		    	statWriter.write(num/div + 48);
+		        num %= div;
+		        div /= 10;
+		    }
+			statWriter.write("|");
+		}
+		statWriter.write("\n");	
+	}
+	
 	public void refreshSave(CellGrid MyGrid) throws Exception{
 		PrintWriter writer = new PrintWriter("save.txt");
 		writer.print("");
@@ -78,6 +153,8 @@ public class FileManager {
 	public void closeAll() throws Exception{
 		saveWriter.close();
 		saveReader.close();
+		statWriter.close();
+		statReader.close();
 	}
 	
 	

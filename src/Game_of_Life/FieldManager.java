@@ -124,28 +124,34 @@ public class FieldManager {
 	 * @param SceneY cursor y position
 	 * @param mode chosen cursor mode
 	 */
-	public void clickMouse(double SceneX,double SceneY,String mode) { //реакция на клик
+	public void clickMouse(double SceneX,double SceneY,String mode,Stat st) { //реакция на клик
 		switch(mode) {
 		case "Dot": {
-			if(!MyGrid.getCell((int)((SceneY - 45)/fieldCellSize ),(int)((SceneX - 72)/fieldCellSize)).getState() )
+			if(!MyGrid.getCell((int)((SceneY - 45)/fieldCellSize ),(int)((SceneX - 72)/fieldCellSize)).getState() ) {
 				MyGrid.setCell((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize), true);
+				st.plus_dots();
+			}
 			else MyGrid.setCell((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize), false);	
 			break;
 		}
 		case "Glyder": {		
 				MyGrid.setGlyder((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize));
+				st.plus_glyders();
 			break;
 		}
 		case "Switch": {		
 			MyGrid.setSwitch((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize));
+			st.plus_switches();
 		break;
 		}
 		case "SpaceShip": {		
 			MyGrid.setSpaceShip((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize));
+			st.plus_spaceships();
 		break;
 		}
 		case "Pulsar": {		
 			MyGrid.setPulsar((int)((SceneY - 45)/fieldCellSize ),(int) ((SceneX - 72)/fieldCellSize));
+			st.plus_pulsars();
 		break;
 		}
 		}

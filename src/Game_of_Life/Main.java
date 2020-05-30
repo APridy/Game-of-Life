@@ -12,6 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,7 +33,9 @@ public class Main extends Application {
 	private static final int cellSize = 12;
 	private static final int gridX = canvasY/cellSize;
 	private static final int gridY = canvasX/cellSize;
-	
+	Stat st = new Stat();
+	Label statistics = new Label(st.get_statistics());
+	Label beststatistics = new Label(st.get_best_statistics());
 	FieldManager fm = new FieldManager(canvasX,canvasY,cellSize,gridX,gridY);
 	boolean autorun = false;
 	int autorunSpeed = 1000;
@@ -45,6 +48,11 @@ public class Main extends Application {
 	public void start (Stage primaryStage) throws Exception{
 		
 		FileManager fl = new FileManager();
+		st.set_statistics(fl.loadStat(1));
+		st.set_best_statistics(fl.loadStat(2));
+		beststatistics.setText(st.get_best_statistics());
+		statistics.setText(st.get_statistics());
+		
 		
 		fm.setCellGrid(fl.loadSave(fm.getCellGrid()));
 		fm.stagnateField();
@@ -60,6 +68,12 @@ public class Main extends Application {
 		ComboBox<String> cursorMode = new ComboBox<String>(modes);
 		cursorMode.setValue("Dot");
 		
+	
+		//Label statistics = new Label("dsadsds");
+		beststatistics.setTextFill(Color.web("#ffffff", 0.8));
+		statistics.setTextFill(Color.web("#ffffff", 0.8));
+		statistics.setPadding(new Insets(5, 0, 0, 5));
+		beststatistics.setPadding(new Insets(5, 0, 0, 5));
 		Button button_run = new Button("Run"); 
 		Button button_stop = new Button("Stop");
 		Button button_stepf = new Button("Next\nGen");
@@ -79,7 +93,7 @@ public class Main extends Application {
 		HBox topMenu = new HBox(3);
 		HBox bottomMenu = new HBox(3);
 		topMenu.setStyle("-fx-background-color: #303030;"); 
-		topMenu.setPadding(new Insets(10, 0, 10, 130));
+		topMenu.setPadding(new Insets(10, 0, 10, 5));
 		leftMenu.setStyle("-fx-background-color: #C0C0C0;");
 		leftMenu.setPadding(new Insets(10, 5, 10, 5));
 		rightMenu.setStyle("-fx-background-color: #C0C0C0;");
@@ -87,20 +101,23 @@ public class Main extends Application {
 		bottomMenu.setStyle("-fx-background-color: #303030;");
 		bottomMenu.setPadding(new Insets(13, 0, 10, 160)); 
 		leftMenu.getChildren().addAll(button_run,button_stop,button_stepf,button_clear,button_randomize);
-		topMenu.getChildren().addAll(cursorMode,button_savefile,button_exit);
+		topMenu.getChildren().addAll(cursorMode,button_savefile,button_exit,statistics,beststatistics);
 		bottomMenu.getChildren().addAll(slider);
 		
 		button_run.setOnAction(e -> {autorun = true; auto.start();}); 
-		button_stop.setOnAction(e -> {autorun = false;});
-		button_stepf.setOnAction(e -> fm.updateField());
+		button_stop.setOnAction(e -> {autorun = false; statistics.setText(st.get_statistics());});
+		button_stepf.setOnAction(e -> {fm.updateField(); st.plus_step(); 
+			st.set_whites_and_blacks(fm.getCellGrid().get_whites_and_blacks()); statistics.setText(st.get_statistics());});
 		button_savefile.setOnAction(e -> {try {
 			fl.refreshSave(fm.getCellGrid());
+			fl.saveStat(st);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}});
 		button_exit.setOnAction(e ->{ try {fl.closeAll();} catch (Exception e1) {e1.printStackTrace();} System.exit(0);});
-		button_clear.setOnAction(e -> {fm.clearField();});
-		button_randomize.setOnAction(e -> fm.randomizeField());		
+		button_clear.setOnAction(e -> {fm.clearField(); st.clear_statistics(); statistics.setText(st.get_statistics());});
+		button_randomize.setOnAction(e -> {fm.randomizeField(); st.plus_step(); 
+		st.set_whites_and_blacks(fm.getCellGrid().get_whites_and_blacks()); statistics.setText(st.get_statistics());});		
 		
 		BorderPane borderpane = new BorderPane(); 
 		borderpane.setTop(topMenu);
@@ -111,7 +128,8 @@ public class Main extends Application {
 		
 		scene = new Scene(borderpane,sceneX,sceneY);
 		
-		scene.setOnMouseClicked(e -> fm.clickMouse(e.getSceneX(), e.getSceneY(),cursorMode.getValue()) );
+		scene.setOnMouseClicked(e -> { fm.clickMouse(e.getSceneX(), e.getSceneY(),cursorMode.getValue(),st); 
+		st.set_whites_and_blacks(fm.getCellGrid().get_whites_and_blacks()); statistics.setText(st.get_statistics());});
 	
 		window.setScene(scene);
 		window.setTitle("Game of Life");
@@ -125,7 +143,10 @@ public class Main extends Application {
 		@Override
 		public void run() {
 		while(true) {
-			if(autorun) fm.updateField();	
+			if(autorun) {st.plus_step(); 
+			st.set_whites_and_blacks(fm.getCellGrid().get_whites_and_blacks());
+			statistics.setText(st.get_statistics()); 
+			fm.updateField();}	
 				try {
 					Thread.sleep(1000/(long)slider.getValue());
 				}

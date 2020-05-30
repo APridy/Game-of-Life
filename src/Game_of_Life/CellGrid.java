@@ -324,4 +324,16 @@ public void stepForward(){
 		for(int j = 0;j < len; j++) 
 			Grid[i][j].setState(GridNext[i][j].getState());
 }
+
+public int[] get_whites_and_blacks() {
+	int[] num = {0,0};
+	for(int i = 0;i < hei;i ++)
+		for(int j = 0;j < len; j++) {
+			if(!Grid[i][j].getState())
+				num[0]++;
+			else num[1]++;
+		}
+	return num;
+}
+
 }
